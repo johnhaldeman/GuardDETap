@@ -1,0 +1,201 @@
+package com.guardium.proto.datasource;
+
+message Timestamp {
+    required fixed32 unix_time = 1;
+    optional fixed32 usec = 2;
+    optional sfixed32 tz_min = 3;
+    optional sfixed32 tz_dst = 4;
+}
+
+message Handshake {
+    required com.guardium.proto.datasource.Timestamp timestamp = 1;
+    required string client_identifier = 2;
+    required string current_master = 3;
+    required fixed32 current_master_ip = 4;
+    optional string vendor = 5;
+    optional string product = 6;
+    optional string version = 7;
+    optional bool firewall = 8;
+    optional bool transient = 9;
+    repeated Forwarding_configuration forwarding = 10;
+    optional bool sink = 11 [default = false];
+    optional bool policy_push = 12;
+}
+
+message Forwarding_configuration {
+    optional fixed32 vendor_id = 1;
+    repeated string forward_messages = 2;
+    repeated string filter_messages = 3;   
+}
+
+message Ping {
+    required com.guardium.proto.datasource.Timestamp timestamp = 1;
+    required string client_identifier = 2;
+    required string current_master = 3;
+    required fixed32 current_master_ip = 4;
+}
+
+message Guard_ds_message {
+	enum Type {
+	    HANDSHAKE = 1;
+	    PING = 2;
+	    ERROR_MSG = 3;
+	    SESSION_START = 4;
+	    SESSION_END = 5;
+	    CLIENT_REQUEST = 6;
+	    SERVER_REPLY = 7;
+	    POLICY_RULES = 8;
+	    SESSION_DATA = 9;
+	    MONITOR_SESSION = 10;
+	    EXCEPTION = 11;
+	    ICAP = 12;
+	    CONFIG = 13;
+	    PARSE = 14;
+	    COLLECTOR_FEATURE = 15;
+	    SYSTEM_I_RAW = 16;
+	    GDM_APP_DATA = 17;
+	    QUERYREWRITE_PREVIEW = 18;
+    }
+    
+    required com.guardium.proto.datasource.Guard_ds_message.Type type = 1;
+    optional com.guardium.proto.datasource.Handshake handshake = 2;
+    optional com.guardium.proto.datasource.Ping ping = 3;
+    optional com.guardium.proto.datasource.Session_start session_start = 4;
+    optional com.guardium.proto.datasource.Client_request client_request = 6;
+}
+
+message Session_start {
+	optional int64 session_id = 1;
+	optional com.guardium.proto.datasource.Session_locator session_locator = 2;
+	optional com.guardium.proto.datasource.Timestamp timestamp = 3;
+	optional com.guardium.proto.datasource.Accessor accessor = 4;
+	optional string uid_chain = 5;
+	optional int64 prev_session_id = 6;
+	optional string process_id = 7;
+	optional string terminal_id = 8;
+	optional string db_name = 9;
+	optional string app_user_name = 10;
+}
+
+message Session_locator {
+	optional fixed32 client_ip = 1;
+	optional fixed32 client_port = 2;
+	optional fixed32 server_ip = 3;
+	optional fixed32 server_port = 4;
+}
+
+message Application_data {
+	optional com.guardium.proto.datasource.Application_data.Language_type language = 1;
+	required com.guardium.proto.datasource.Application_data.Data_type type = 2;
+	optional string text = 3;
+	optional bytes packet = 4;
+	optional com.guardium.proto.datasource.GDM_construct construct = 5;
+	required com.guardium.proto.datasource.Timestamp timestamp = 6;
+	optional string application_user = 7;
+	optional com.guardium.proto.datasource.Session_locator session_locator = 8;
+	optional string variables_values = 9;
+	
+	enum Data_type {
+      TEXT = 1;
+      RAW = 2;
+      CONSTRUCT = 3;
+    }
+	
+	enum Language_type {
+	  FREE_TEXT = 4;
+      MSSQL = 8;
+      SYB = 16;
+      ORACLE = 32;
+      DB2 = 64;
+      INFX = 1024;
+      MYSQL = 8192;
+      MSSP = 4194304;
+      OPTIM_AUDIT = 8388608;
+      OPTIM_REDACT = 2048;
+      BIG_INSIGHTS = 16777216;
+	}
+
+}
+
+message Accessor {
+	required string db_user = 1;
+	required string server_type = 2;
+	optional string server_os = 3;
+	optional string client_os = 4;
+	optional string client_hostname = 5;
+	optional string server_hostname = 6;
+	optional string comm_protocol = 7;
+	optional string db_protocol = 8;
+	optional string db_protocol_version = 9;
+	optional string os_user = 10;
+	optional string source_program = 11;
+	optional string client_mac = 12;
+	optional string server_description = 13;
+	optional string service_name = 14;
+	optional com.guardium.proto.datasource.Application_data.Language_type language = 15;
+	optional com.guardium.proto.datasource.Application_data.Data_type type = 16 [default = TEXT];
+}
+
+
+message GDM_construct {
+	repeated com.guardium.proto.datasource.GDM_sentence sentences = 1;
+	optional string original_sql = 2;
+	optional string full_sql = 3;
+	optional bool is_valid = 4 [default = true];
+	optional int32 statement_type = 5;
+}
+
+message GDM_sentence {
+	required string verb = 1;
+	repeated com.guardium.proto.datasource.GDM_sentence descendants = 2;
+	repeated com.guardium.proto.datasource.GDM_object objects = 3;
+	repeated com.guardium.proto.datasource.GDM_field sentence_fields = 4;
+	optional com.guardium.proto.datasource.Positional_string position = 5;
+}
+
+message GDM_object {
+    required string name = 1;
+    optional string schema = 2;
+    optional string type = 3;
+    repeated com.guardium.proto.datasource.GDM_field object_fields = 4;
+    optional com.guardium.proto.datasource.Positional_string position = 5;
+}
+
+
+message GDM_field {
+	required string name = 1;
+	repeated com.guardium.proto.datasource.GDM_field.Origin origins = 2;
+	optional bytes value = 3;
+	optional com.guardium.proto.datasource.Positional_string position = 4;
+	
+	enum Origin {
+	  CLAUSE_WHERE = 1;
+      CLAUSE_ORDER_BY = 2;
+      CLAUSE_HAVING = 3;
+      CLAUSE_GROUP_BY = 4;
+      CLAUSE_LIST = 5;
+      CLAUSE_ON = 6;
+	}
+}
+
+message Positional_string {
+	optional uint32 start = 1;
+	optional uint32 end = 2;
+}
+
+message Client_request {
+	required int64 session_id = 1;
+	optional int64 request_id = 2;
+	required com.guardium.proto.datasource.Application_data data = 3;
+	optional com.guardium.proto.datasource.Bind_info bind_info = 4;
+}
+
+message Bind_info {
+	repeated com.guardium.proto.datasource.Bind_variable vars = 1;
+}
+
+message Bind_variable {
+	optional int32 type = 1;
+	optional string value = 2;
+}
+
