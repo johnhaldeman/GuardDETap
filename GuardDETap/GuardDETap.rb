@@ -67,7 +67,6 @@ class GuardDETapServer < EventMachine::Connection
   def receive_data(data)
 
     if data.to_s =~ /\n/ then
-      puts("new line")
       processNewLine(data)
     else
       @currentLine = @currentLine + data
@@ -98,20 +97,16 @@ class GuardDETapServer < EventMachine::Connection
     matches = regex.match(line)
 
     if matches then
-      puts matches.inspect
 
       regex2 = /(\w+)="(.+?)"/
       matches2 = matches["params"].scan(regex2)
 
-      puts "PARAMS:"
       params = Hash.new
       matches2.each do |n|
         params[n[0]] = n[1]
-        puts "param " + n[0] + " => " + params[n[0]]
       end
       processMessage(params)
     else
-      puts("message no match")
     end
 
   end
@@ -125,21 +120,13 @@ class GuardDETapServer < EventMachine::Connection
     # inference
     if params.has_key?("sproc") && params.has_key?("uinfo")
       key = client_ip + ":" + params["sproc"] + ":" + params["uinfo"].split(/,/)[0]
-      puts "Session Key: " + key
-        puts "sessions: " + @deSessionList.inspect
-
       if @deSessionList .has_key?(key)
-        puts "Old Session"
         @currentSession = @deSessionList [key]
       else
-        puts "New Session"
         @currentSession = GuardDESession.new(client_ip, params["sproc"], params["uinfo"], @deSessionList.length + 100, 514)
         @deSessionList[key] = @currentSession
 
         MTLogger.debug('Sending Session Start Message')
-        puts('Sending Session Start Message')
-        puts("user:" + @currentSession.uinfo.split(/,/)[0])
-        puts("app: " + @currentSession.app_name)
         sessionStart = GuardiumNewSessionMessage.new(100, @currentSession.clientIP, @currentSession.clientPort, @currentSession.clientIP, @currentSession.serverPort, @currentSession.uinfo.split(/,/)[0], @currentSession.app_name)
         @guardClient.send_data(sessionStart.getWrappedGuardiumMessage)
       end

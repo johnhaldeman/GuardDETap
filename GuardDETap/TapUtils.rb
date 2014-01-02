@@ -135,7 +135,6 @@ class GuardiumNewSessionMessage < GuardiumMessage
     dbUser = @dbUser
     sourceApp = @sourceApp
     
-    puts('user in utils:' + @dbUser)
         
     accessor = Com::Guardium::Proto::Datasource::Accessor.
         new(:language => languageType,

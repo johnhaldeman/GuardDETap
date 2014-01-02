@@ -33,7 +33,7 @@ The following are some obvious areas for improvement:
 - Further testing is likely to be required to support all Guardium/Vormetric DE event types, rather than just those related to file access
 - The TapUtils library requires a little bit of work to make it a generic library for building Ruby based STAPs
 
-##Screenshots
+##Screenshot
 ![ss](GuardDETapSS.png)
 
 ##License
