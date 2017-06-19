@@ -1,4 +1,4 @@
-#GuardDETap
+# GuardDETap
 
 The GuardDETap is a Type 1 Guardium STAP for Guardium Data Encryption and Vormetric Data Encryption. Guardium Data Encryption is a file encryption, access control, and auditing product. Unlike Guardium Database Activity Monitoring it can provide thorough and real time auditing capabilities for file access. Guardium is a Database Activity Monitoring System now owned and developed by IBM. Among other things, Guardium monitors, audits, and reports on database transactions.
 
@@ -8,7 +8,7 @@ The GuardDETap's architecture consists of a server component that accepts syslog
 
 The GuardDETap server uses the Ruby [EventMachine](http://rubyeventmachine.com/) library (for connection/data handling), [protocol buffers](http://code.google.com/p/ruby-protobuf/) (to communicate with the collector), and [bindata](http://bindata.rubyforge.org/) (to build Guardium's wrapper messages).
 
-###GuardDETap Server Prerequisites:
+### GuardDETap Server Prerequisites:
 - Ruby 1.9 and above
 - The EventMachine gem installed
 - The protobuf gem installed
@@ -16,7 +16,7 @@ The GuardDETap server uses the Ruby [EventMachine](http://rubyeventmachine.com/)
 
 The GuardDETap was tested with Guardium V9.1, but it seems to work in Guardium V9.0 and V8.2 as well. Other versions of Guardium have not been tried.
 
-##Installing and Starting GuardDETap
+## Installing and Starting GuardDETap
 
 Put all of the GuardDETap software on a server and execute:
 ```
@@ -28,15 +28,15 @@ usage: ruby GuardDETap.rb <listen_ip> <collector_ip>
 ```
 Next, add the server where the GuardDETap Server is running to the list of Syslog recievers for any Guardium/Vormetric DE agents. The GuardDETap Server will listen on TCP port 514.
 
-##Future Development
+## Future Development
 The following are some obvious areas for improvement:
 - Further testing is likely to be required to support all Guardium/Vormetric DE event types, rather than just those related to file access
 - The TapUtils library requires a little bit of work to make it a generic library for building Ruby based STAPs
 
-##Screenshot
+## Screenshot
 ![ss](GuardDETapSS.png)
 
-##License
+## License
 The GuardDETapis released under the MIT license. The components that GuardDETap uses (eg: EventMachine, IBM InfoSphere Guardium, Guardium Data Encryption) have their own licenses.
 
 ##About the Author
