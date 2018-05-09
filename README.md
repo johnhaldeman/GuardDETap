@@ -3,7 +3,8 @@
 The GuardDETap is a Type 1 Guardium STAP for Guardium Data Encryption and Vormetric Data Encryption. Guardium Data Encryption is a file encryption, access control, and auditing product. Unlike Guardium Database Activity Monitoring it can provide thorough and real time auditing capabilities for file access. Guardium is a Database Activity Monitoring System now owned and developed by IBM. Among other things, Guardium monitors, audits, and reports on database transactions.
 
 The GuardDETap is programmed in Ruby and follows the Guardium universal feed protocol explained in [this article](http://www.ibm.com/developerworks/data/library/techarticle/dm-1210universalfeed/index.html) and [this article](http://www.ibm.com/developerworks/data/library/techarticle/dm-1211universalfeed2/index.html). The GuardDETap provides a feed of Guardium/Vormetric DE events to a Guardium Database Activity Monitoring Collector Appliance which collects and reports on the data. The GuardDETap is still under development, but has been shown to forward all simple Guardium/Vormetric DE transactions to a Guardium collector for logging.
-##Architecture and Prerequisites
+
+## Architecture and Prerequisites
 The GuardDETap's architecture consists of a server component that accepts syslog messages from a Guardium/Vormetric DE agent and forwards them to Guardium Collector.
 
 The GuardDETap server uses the Ruby [EventMachine](http://rubyeventmachine.com/) library (for connection/data handling), [protocol buffers](http://code.google.com/p/ruby-protobuf/) (to communicate with the collector), and [bindata](http://bindata.rubyforge.org/) (to build Guardium's wrapper messages).
